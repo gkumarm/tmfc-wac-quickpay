@@ -1,0 +1,6 @@
+#/usr/bin/sh
+
+#cd web
+export DEBUG=1
+export SECRET_KEY=verysecuredsecretkey
+python3 manage.py runserver

@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+    # expose:
+    #   - "8000"
+    ports:
+      - 8000:8000      
+    volumes:
+      - ./app:/app
+      - ./data/web:/vol/web
+    environment:
+      - SECRET_KEY=verysecuredsecretkey
+      - DEBUG=1
+    command: /py/bin/gunicorn wa_quickpay.wsgi:application -w 2 -b :8000
+    # command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    links:
+      - redis:redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+volumes:
+  redisdata:
+
