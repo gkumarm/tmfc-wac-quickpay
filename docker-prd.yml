@@ -1,0 +1,36 @@
+version: "1"
+services:
+  app:
+    image: gkumarm/tmfc-wac-quickpay-app:latest
+    restart: always
+    expose:
+      - "8000"
+    volumes:
+      - web-django:/usr/src/app
+      - web-static:/usr/src/app/static
+    env_file: .env
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             /usr/local/bin/gunicorn wa_quickpay.wsgi:application -w 2 -b :8000"
+    depends_on:
+      - redis    
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  proxy:
+    restart: always
+    image: gkumarm/tmfc-wac-quickpay-proxy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - web-static:/usr/src/app/static
+    depends_on:
+      - app
+
+volumes:
+  web-django:
+  web-static:
+  redisdata:      
