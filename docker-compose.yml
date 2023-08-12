@@ -1,34 +1,47 @@
-version: '3.9'
+version: '1.0.0'
 
 services:
   app:
-    build:
-      context: .
-    # expose:
-    #   - "8000"
-    ports:
-      - 8000:8000      
-    volumes:
-      - ./app:/app
-      - ./data/web:/vol/web
-    environment:
-      - SECRET_KEY=verysecuredsecretkey
-      - DEBUG=1
-    command: /py/bin/gunicorn wa_quickpay.wsgi:application -w 2 -b :8000
-    # command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    restart: always
+    build: ./app
+    expose:
+      - "8000"
     links:
       - redis:redis
+    volumes:
+      - .:/usr/src/app
+      - web-django:/usr/src/app
+      - web-static:/usr/src/app/static
+    env_file: .env
+    environment:
+      DEBUG: 'true'
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             /usr/local/bin/gunicorn wa_quickpay.wsgi:application -w 2 -b :8000"
     depends_on:
-      - redis
+      - redis    
+
+  proxy:
+    restart: always
+    build: ./proxy/
+    ports:
+      - "80:80"
+    volumes:
+      - web-static:/usr/src/app/static
+    links:
+      - app:app
+    depends_on:
+      - app
 
   redis:
-    image: redis:latest
     restart: always
+    image: redis:latest
     ports:
       - "6379:6379"
     volumes:
       - redisdata:/data
 
 volumes:
+  web-django:
+  web-static:
   redisdata:
-

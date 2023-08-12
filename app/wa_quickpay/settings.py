@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get ('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DEBUG',0)))
-
+#DEBUG = bool(int(os.environ.get('DEBUG',0)))
+DEBUG = True
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend (
     filter(
@@ -124,8 +124,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-#STATIC_ROOT = '/vol/web/static'
+STATIC_ROOT = '/usr/src/app/static'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ('static',)
 
@@ -138,3 +137,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 URL_BILL_SUMMARY = "http://192.168.0.102:8080/tmf-api/customerBillManagement/v4/customerBill?filter=billingAccount[?(@.name=='id'&&@.value=='{0}')]"
 #URL_BILL_SUMMARY = "http://192.168.0.102:8080/tmf-api/customerBillManagement/v4/customerBill?filter=billSummary,serviceInventory&filter=billingAccount[?(@.name=='id'&&@.value=='{0}')]"
 URL_POST_PAYMENT = "http://192.168.0.102:8081/tmf-api/paymentManagement/v4/payment"
+
+
