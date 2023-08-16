@@ -8,17 +8,15 @@ services:
     volumes:
       - web-django:/usr/src/app
       - web-static:/usr/src/app/static
-    env_file: .env
+#    env_file: .env
+    environment:
+      URL_BILL_SUMMARY: http://192.168.0.102:8080
+      URL_POST_PAYMENT: http://192.168.0.102:8081
+      SECRET_KEY: verysecuredsecretkey
+      ALLOWED_HOSTS: 192.168.0.104 # The IP of server running this docker image
     command: >
       sh -c "python manage.py collectstatic --noinput &&
              /usr/local/bin/gunicorn wa_quickpay.wsgi:application -w 2 -b :8000"
-    depends_on:
-      - redis    
-
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
 
   proxy:
     restart: always
@@ -27,10 +25,11 @@ services:
       - "80:80"
     volumes:
       - web-static:/usr/src/app/static
+    # links:
+    #   - app:app
     depends_on:
       - app
 
 volumes:
   web-django:
   web-static:
-  redisdata:      

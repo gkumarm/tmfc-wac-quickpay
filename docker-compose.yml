@@ -6,8 +6,6 @@ services:
     build: ./app
     expose:
       - "8000"
-    links:
-      - redis:redis
     volumes:
       - .:/usr/src/app
       - web-django:/usr/src/app
@@ -18,8 +16,6 @@ services:
     command: >
       sh -c "python manage.py collectstatic --noinput &&
              /usr/local/bin/gunicorn wa_quickpay.wsgi:application -w 2 -b :8000"
-    depends_on:
-      - redis    
 
   proxy:
     restart: always
@@ -33,15 +29,6 @@ services:
     depends_on:
       - app
 
-  redis:
-    restart: always
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    volumes:
-      - redisdata:/data
-
 volumes:
   web-django:
   web-static:
-  redisdata:

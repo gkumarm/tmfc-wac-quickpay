@@ -15,12 +15,11 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
+# Quick-start development settings - un
+# suitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-v%%bg*^q@pf^yjgph^kwgaom3lm078t8e^0yxikta+smy*%p9x'
 SECRET_KEY = os.environ.get ('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -134,8 +133,5 @@ STATICFILES_DIRS = ('static',)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CUSTOM SETTINGS FOR QuickPay
-URL_BILL_SUMMARY = "http://192.168.0.102:8080/tmf-api/customerBillManagement/v4/customerBill?filter=billingAccount[?(@.name=='id'&&@.value=='{0}')]"
-#URL_BILL_SUMMARY = "http://192.168.0.102:8080/tmf-api/customerBillManagement/v4/customerBill?filter=billSummary,serviceInventory&filter=billingAccount[?(@.name=='id'&&@.value=='{0}')]"
-URL_POST_PAYMENT = "http://192.168.0.102:8081/tmf-api/paymentManagement/v4/payment"
-
-
+URL_BILL_SUMMARY = os.path.join(os.environ.get('URL_BILL_SUMMARY',''), "tmf-api/customerBillManagement/v4/customerBill?filter=billingAccount[?(@.name=='id'&&@.value=='{0}')]")
+URL_POST_PAYMENT = os.path.join(os.environ.get("URL_POST_PAYMENT",''), "tmf-api/paymentManagement/v4/payment")
